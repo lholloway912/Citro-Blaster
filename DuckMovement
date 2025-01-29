@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class DuckMovement : MonoBehaviour
 {
+    // Speed
     public float moveSpeed;
 
     void Update()
     {
+        // Side to side movement
         transform.Translate(Vector2.right * moveSpeed * Time.deltaTime);
     }
 
+    // Downward movement
     private void OnTriggerEnter2D(Collider2D collision) {
         if(collision.gameObject.tag == "Collider"){
             transform.position = new Vector3(transform.position.x, transform.position.y -1, transform.position.z);
