@@ -4,13 +4,23 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-
+    //Speed
     public float moveSpeed = 5;
+    // Get key input
     public float hInput;
 
     void Update()
     {
+        // Uses key input to change direction
         hInput = Input.GetAxisRaw("Horizontal");
+
+        // Moves player
         transform.Translate(Vector2.right * hInput * moveSpeed * Time.deltaTime);
+
+        //Escape key
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            Application.Quit();
+            Debug.Log("Closing Application...");
+        }
     }
 }
