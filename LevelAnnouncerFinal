@@ -1,0 +1,34 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+public class LevelAnnouncer : MonoBehaviour
+{
+    public TMP_Text messageText;
+
+    private void Start()
+    {
+        messageText.gameObject.SetActive(false);
+    }
+
+    private void Update() {
+        transform.Translate(new Vector3(0, -1, 0) * Time.deltaTime * 4f);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            messageText.gameObject.SetActive(true);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            messageText.gameObject.SetActive(false);
+        }
+    }
+}
