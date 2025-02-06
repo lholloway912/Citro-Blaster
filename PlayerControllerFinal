@@ -1,0 +1,85 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
+
+public class PlayerController : MonoBehaviour
+{
+    //Speed
+    public float moveSpeed = 5;
+    // Get key input
+    public float hInput;
+
+    // private bool _laserActive;
+    private Vector3 startPosition; //store start position
+
+    public int lives = 3;
+    public Image[] livesUI;
+
+    public GameObject explosionPrefab;
+
+
+    void Start()
+    {
+        startPosition = transform.position; //store player starting position
+    }
+    void Update()
+    {
+        // Uses key input to change direction
+        hInput = Input.GetAxisRaw("Horizontal");
+
+        // Moves player
+        transform.Translate(Vector2.right * hInput * moveSpeed * Time.deltaTime);
+
+        //Escape key
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+            Debug.Log("Closing Application...");
+        }
+
+    }
+
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.gameObject.tag == "EnemyProjectile")
+        {
+            Destroy(collision.gameObject);
+            Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            lives -= 1;
+            for (int i = 0; i < livesUI.Length; i++)
+            {
+                if (i < lives)
+                {
+                    livesUI[i].enabled = true;
+                }
+                else
+                {
+                    livesUI[i].enabled = false;
+                }
+            }
+            if (lives <= 0)
+            {
+                Lose();
+                Destroy(gameObject);
+            }
+
+        }
+
+        if (collision.gameObject.tag == "Enemy")
+        {
+            lives = 0;
+        }
+    }
+
+
+    public void Lose()
+    {
+        SceneManager.LoadScene("GameOver");
+    }
+
+}
