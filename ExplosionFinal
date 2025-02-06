@@ -1,0 +1,32 @@
+using System.Collections;
+using UnityEngine;
+
+public class Explosion : MonoBehaviour
+{
+    private Animator animator; // Reference to the Animator component
+
+    void Start()
+    {
+        animator = GetComponent<Animator>();
+
+        if (animator != null)
+        {
+            animator.Play(animator.GetCurrentAnimatorStateInfo(0).shortNameHash);
+
+            StartCoroutine(DestroyAfterAnimation());
+        }
+        else
+        {
+            Debug.LogWarning("No Animator component found on this prefab.");
+            Destroy(gameObject); 
+        }
+    }
+
+    IEnumerator DestroyAfterAnimation()
+    {
+        // Wait for the current animation to finish
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+
+        Destroy(gameObject); 
+    }
+}
