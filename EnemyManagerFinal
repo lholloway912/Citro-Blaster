@@ -1,0 +1,48 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using TMPro;
+
+public class EnemyManager : MonoBehaviour
+{
+    private int enemyCount;
+    public string sceneName;
+    public AudioSource victorySound;
+    public AudioSource backgroundMusic;
+
+
+    void Start()
+    {
+        //count all objects tagged as "Enemy" at the start of the scene
+        enemyCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
+
+        if (backgroundMusic != null) {
+            backgroundMusic.Play();
+        }
+    }
+
+    public void EnemyDefeated()
+    {
+        enemyCount--; //reduce the enemy count
+
+        //no enemies remain, load the next scene
+        if (enemyCount <= 0)
+        {
+            StartCoroutine(PlaySoundAndLoadScene());
+        }
+    }
+
+    private IEnumerator PlaySoundAndLoadScene() {
+        if (backgroundMusic != null && backgroundMusic.isPlaying) {
+            backgroundMusic.Stop();
+        }
+        
+        if (victorySound != null) {
+            victorySound.Play();
+            yield return new WaitForSeconds(victorySound.clip.length);
+        }
+        SceneManager.LoadScene(sceneName);
+    }
+
+}
