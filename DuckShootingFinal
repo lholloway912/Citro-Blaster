@@ -49,6 +49,10 @@ public class DuckShooting : MonoBehaviour
         if (collision.gameObject.tag == "Boundary") {
             SceneManager.LoadScene("GameOver");
         }
+        if (collision.gameObject.tag == "Player")
+        {
+            SceneManager.LoadScene("GameOver");
+        }
 
     }
 
