@@ -1,0 +1,24 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
+
+public class PowerUpManager : MonoBehaviour
+{
+    public GameObject powerUp;
+    // Start is called before the first frame update
+    void Start()
+    {
+        StartCoroutine(CreatePowerup());
+    }
+
+    IEnumerator CreatePowerup()
+    {
+        Instantiate(powerUp, new Vector3(Random.Range(-9f, 9f), 7.5f, 0), Quaternion.identity);
+        yield return new WaitForSeconds(Random.Range(10f, 15f));
+        StartCoroutine(CreatePowerup());
+    }
+}
