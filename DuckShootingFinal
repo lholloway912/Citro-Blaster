@@ -1,0 +1,57 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class DuckShooting : MonoBehaviour
+{
+    public GameObject missilePrefab; //assign the missile prefab
+    public float fireRate; //time between shots
+    private float nextFireTime = 0f; // Timer for firing
+
+    public Transform missileSpawnPoint; // Position of missile
+
+    private float startDelay;
+    private bool canShoot = false;
+
+    public AudioSource duckShooting;
+
+    void Start() {
+        fireRate = Random.Range(3f,10f);
+
+        startDelay = Random.Range(2f, 8f);
+
+        Invoke("EnableShooting", startDelay);
+    }
+    void Update()
+    {
+        //shoot missile in intervals
+        if (canShoot && Time.time >= nextFireTime)
+        {
+            fireRate = Random.Range(3f, 10f);
+            nextFireTime = Time.time + fireRate;
+            ShootMissile();
+        }
+    }
+
+    private void ShootMissile()
+    {
+        duckShooting.Play();
+        Instantiate(missilePrefab, missileSpawnPoint.position, Quaternion.identity); //instantiate missle at invaders current position
+    }
+
+    private void EnableShooting() {
+        canShoot = true;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Boundary") {
+            SceneManager.LoadScene("GameOver");
+        }
+
+    }
+
+
+
+}
