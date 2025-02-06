@@ -1,0 +1,83 @@
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class ProjectileShoot : MonoBehaviour
+{
+    //Declare projectile as an object
+    public Projectile projectilePrefab;
+    //Initialize shooting to allow fireing normal and with powerups
+    private int shooting;
+
+    public Transform spawnPoint;
+
+    public float shootCooldown = 1f;
+    private bool canShoot = true;
+
+    public AudioSource shootingSound;
+    public AudioSource powerupSound;
+
+
+    void Start()
+    {
+        //Declare what the starting shot type is
+        shooting = 1;
+    }
+
+
+    private void Update()
+    {
+        //Starts the shooting loop
+        Shooting();
+    }
+
+
+    void Shooting()
+    {
+        //Shoots with LMB
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) && canShoot)
+        {
+            canShoot = false;
+            StartCoroutine(ShootCooldown());
+
+            switch (shooting)
+            {
+                //Normal shots
+                case 1:
+                    Instantiate(projectilePrefab, spawnPoint.position, Quaternion.identity);
+                    shootingSound.Play();
+                    break;
+                //Double-shots
+                case 2:
+                    Instantiate(projectilePrefab, spawnPoint.position + new Vector3(0.5f, 0, 0), Quaternion.identity);
+                    Instantiate(projectilePrefab, spawnPoint.position + new Vector3(-0.5f, 0, 0), Quaternion.identity);
+                    shootingSound.Play();
+                    break;
+            }
+        }
+    }
+
+    IEnumerator ShootCooldown() {
+        yield return new WaitForSeconds(shootCooldown);
+        canShoot = true;
+    }
+
+    //Wait a few seconds before lose powerup
+    IEnumerator PowerDown()
+    {
+        yield return new WaitForSeconds(4f);
+        shooting = 1;
+    }
+    //Pickup powerup
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "PowerUp")
+        {
+            shooting = 2;
+            powerupSound.Play();
+            StartCoroutine(PowerDown());
+            Destroy(collision.gameObject);
+        }
+    }
+}
